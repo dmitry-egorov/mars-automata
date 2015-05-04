@@ -1,0 +1,76 @@
+Elm.Model = Elm.Model || {};
+Elm.Model.make = function (_elm) {
+   "use strict";
+   _elm.Model = _elm.Model || {};
+   if (_elm.Model.values)
+   return _elm.Model.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Model",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var roverSpeed = 2;
+   var applyVelocity = F2(function (rover,
+   dt) {
+      return function () {
+         var newPosition = A2($Math$Vector2.scale,
+         rover.speed * $Time.inSeconds(dt),
+         rover.direction);
+         return _U.replace([["position"
+                            ,A2($Math$Vector2.add,
+                            rover.position,
+                            newPosition)]],
+         rover);
+      }();
+   });
+   var findTarget = F2(function (rover,
+   resource) {
+      return _U.replace([["direction"
+                         ,A2($Math$Vector2.direction,
+                         resource.position,
+                         rover.position)]
+                        ,["speed",roverSpeed]],
+      rover);
+   });
+   var updateRover = F3(function (rover,
+   resource,
+   dt) {
+      return A2(applyVelocity,
+      A2(findTarget,rover,resource),
+      dt);
+   });
+   var updateWorld = F2(function (dt,
+   world) {
+      return _U.replace([["rover"
+                         ,A3(updateRover,
+                         world.rover,
+                         world.resource,
+                         dt)]],
+      world);
+   });
+   var Resource = function (a) {
+      return {_: {},position: a};
+   };
+   var Rover = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,direction: b
+             ,position: a
+             ,speed: c};
+   });
+   var World = F2(function (a,b) {
+      return {_: {}
+             ,resource: b
+             ,rover: a};
+   });
+   _elm.Model.values = {_op: _op
+                       ,updateWorld: updateWorld
+                       ,World: World
+                       ,Rover: Rover
+                       ,Resource: Resource};
+   return _elm.Model.values;
+};

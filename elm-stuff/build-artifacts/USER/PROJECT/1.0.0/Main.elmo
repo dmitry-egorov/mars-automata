@@ -1,0 +1,91 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Model$Resource = Elm.Model.Resource.make(_elm),
+   $Model$World = Elm.Model.World.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Utilities = Elm.Utilities.make(_elm),
+   $ViewModel$ViewModel = Elm.ViewModel.ViewModel.make(_elm),
+   $Window = Elm.Window.make(_elm);
+   var generateResources = F2(function (count,
+   seed) {
+      return function () {
+         var fg = A2($Random.$float,
+         -10,
+         10);
+         var f = function (s1) {
+            return function () {
+               var $ = A2($Random.generate,
+               fg,
+               s1),
+               x = $._0,
+               s2 = $._1;
+               var $ = A2($Random.generate,
+               fg,
+               s2),
+               y = $._0,
+               s3 = $._1;
+               return {ctor: "_Tuple2"
+                      ,_0: {_: {}
+                           ,position: A2($Math$Vector2.vec2,
+                           x,
+                           y)}
+                      ,_1: s3};
+            }();
+         };
+         var gen = $Random.customGenerator(f);
+         return $Basics.fst(A2($Random.generate,
+         A2($Random.list,count,gen),
+         seed));
+      }();
+   });
+   var initialSeed = $Random.initialSeed(31415);
+   var initialWorld = {_: {}
+                      ,resources: A2(generateResources,
+                      10,
+                      initialSeed)
+                      ,rover: {_: {}
+                              ,direction: $Math$Vector2.normalize(A2($Math$Vector2.vec2,
+                              -0.5,
+                              0.5))
+                              ,position: A2($Math$Vector2.vec2,
+                              0,
+                              0)
+                              ,speed: 0}};
+   var worldSignal = A3($Signal.foldp,
+   $Model$World.updateWorld,
+   initialWorld,
+   $Time.fps(30));
+   var viewWorld = $ViewModel$ViewModel.Viewport({_: {}
+                                                 ,height: 768
+                                                 ,width: 1024});
+   var main = A2($Signal._op["~"],
+   A2($Signal._op["~"],
+   A2($Signal._op["<~"],
+   $ViewModel$ViewModel.render,
+   A2($Signal._op["<~"],
+   $Utilities.toDimensions2,
+   $Window.dimensions)),
+   $Signal.constant(viewWorld)),
+   worldSignal);
+   _elm.Main.values = {_op: _op
+                      ,viewWorld: viewWorld
+                      ,initialSeed: initialSeed
+                      ,initialWorld: initialWorld
+                      ,worldSignal: worldSignal
+                      ,main: main
+                      ,generateResources: generateResources};
+   return _elm.Main.values;
+};

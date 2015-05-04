@@ -1,0 +1,38 @@
+Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.make = function (_elm) {
+   "use strict";
+   _elm.Utilities = _elm.Utilities || {};
+   if (_elm.Utilities.values)
+   return _elm.Utilities.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Utilities",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm);
+   var angle = F2(function (v1,
+   v2) {
+      return A2($Basics.atan2,
+      $Math$Vector2.getY(v2),
+      $Math$Vector2.getX(v2)) - A2($Basics.atan2,
+      $Math$Vector2.getY(v1),
+      $Math$Vector2.getX(v1));
+   });
+   var toDimensions2 = function (p) {
+      return {_: {}
+             ,height: $Basics.snd(p)
+             ,width: $Basics.fst(p)};
+   };
+   var Dimensions2 = F2(function (a,
+   b) {
+      return {_: {}
+             ,height: b
+             ,width: a};
+   });
+   _elm.Utilities.values = {_op: _op
+                           ,Dimensions2: Dimensions2
+                           ,toDimensions2: toDimensions2
+                           ,angle: angle};
+   return _elm.Utilities.values;
+};

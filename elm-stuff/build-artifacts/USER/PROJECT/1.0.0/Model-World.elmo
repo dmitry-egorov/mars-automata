@@ -1,0 +1,35 @@
+Elm.Model = Elm.Model || {};
+Elm.Model.World = Elm.Model.World || {};
+Elm.Model.World.make = function (_elm) {
+   "use strict";
+   _elm.Model = _elm.Model || {};
+   _elm.Model.World = _elm.Model.World || {};
+   if (_elm.Model.World.values)
+   return _elm.Model.World.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Model.World",
+   $Model$Resource = Elm.Model.Resource.make(_elm),
+   $Model$Rover = Elm.Model.Rover.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var updateWorld = F2(function (dt,
+   world) {
+      return _U.replace([["rover"
+                         ,A3($Model$Rover.updateRover,
+                         world.rover,
+                         world.resources,
+                         dt)]],
+      world);
+   });
+   var World = F2(function (a,b) {
+      return {_: {}
+             ,resources: b
+             ,rover: a};
+   });
+   _elm.Model.World.values = {_op: _op
+                             ,updateWorld: updateWorld
+                             ,World: World};
+   return _elm.Model.World.values;
+};

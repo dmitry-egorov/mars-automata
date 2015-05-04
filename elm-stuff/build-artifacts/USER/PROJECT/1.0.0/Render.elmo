@@ -1,0 +1,61 @@
+Elm.Render = Elm.Render || {};
+Elm.Render.make = function (_elm) {
+   "use strict";
+   _elm.Render = _elm.Render || {};
+   if (_elm.Render.values)
+   return _elm.Render.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Render",
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Model = Elm.Model.make(_elm);
+   var rotationOf = function (orientation) {
+      return $Basics.acos(A2($Math$Vector2.dot,
+      orientation,
+      A2($Math$Vector2.vec2,0,1)));
+   };
+   var renderRover = function (rover) {
+      return $Graphics$Collage.move($Math$Vector2.toTuple(rover.position))($Graphics$Collage.rotate(rotationOf(rover.direction))($Graphics$Collage.filled($Color.black)(A2($Graphics$Collage.rect,
+      10,
+      20))));
+   };
+   var $ = {ctor: "_Tuple2"
+           ,_0: 1024
+           ,_1: 768},
+   gameWidth = $._0,
+   gameHeight = $._1;
+   var renderBackground = $Graphics$Collage.filled($Color.orange)(A2($Graphics$Collage.rect,
+   gameWidth,
+   gameHeight));
+   var render = F2(function (_v0,
+   rover) {
+      return function () {
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            return A3($Graphics$Element.container,
+              _v0._0,
+              _v0._1,
+              $Graphics$Element.middle)(A3($Graphics$Collage.collage,
+              gameWidth,
+              gameHeight,
+              _L.fromArray([renderBackground
+                           ,renderRover(rover)])));}
+         _U.badCase($moduleName,
+         "between lines 25 and 30");
+      }();
+   });
+   _elm.Render.values = {_op: _op
+                        ,gameHeight: gameHeight
+                        ,gameWidth: gameWidth
+                        ,rotationOf: rotationOf
+                        ,renderBackground: renderBackground
+                        ,renderRover: renderRover
+                        ,render: render};
+   return _elm.Render.values;
+};

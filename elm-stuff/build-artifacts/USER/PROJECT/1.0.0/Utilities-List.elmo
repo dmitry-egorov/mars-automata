@@ -1,0 +1,46 @@
+Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.List = Elm.Utilities.List || {};
+Elm.Utilities.List.make = function (_elm) {
+   "use strict";
+   _elm.Utilities = _elm.Utilities || {};
+   _elm.Utilities.List = _elm.Utilities.List || {};
+   if (_elm.Utilities.List.values)
+   return _elm.Utilities.List.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Utilities.List",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm);
+   var minimumBy = F2(function (list,
+   selector) {
+      return function () {
+         var minBy = F2(function (x,
+         y) {
+            return function () {
+               var p = {ctor: "_Tuple2"
+                       ,_0: x
+                       ,_1: selector(x)};
+               return _U.cmp($Basics.snd(p),
+               $Basics.snd(y)) < 0 ? p : y;
+            }();
+         });
+         return function () {
+            switch (list.ctor)
+            {case "::":
+               return $Maybe.Just($Basics.fst(A3($List.foldl,
+                 minBy,
+                 {ctor: "_Tuple2"
+                 ,_0: list._0
+                 ,_1: selector(list._0)},
+                 list._1)));}
+            return $Maybe.Nothing;
+         }();
+      }();
+   });
+   _elm.Utilities.List.values = {_op: _op
+                                ,minimumBy: minimumBy};
+   return _elm.Utilities.List.values;
+};

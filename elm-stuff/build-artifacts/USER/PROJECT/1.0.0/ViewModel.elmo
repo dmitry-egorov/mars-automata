@@ -1,0 +1,77 @@
+Elm.ViewModel = Elm.ViewModel || {};
+Elm.ViewModel.make = function (_elm) {
+   "use strict";
+   _elm.ViewModel = _elm.ViewModel || {};
+   if (_elm.ViewModel.values)
+   return _elm.ViewModel.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "ViewModel",
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Model = Elm.Model.make(_elm),
+   $Utilities = Elm.Utilities.make(_elm);
+   var transform = F2(function (position,
+   _v0) {
+      return function () {
+         return $Math$Vector2.toTuple(A2($Math$Vector2.scale,
+         $Basics.toFloat(_v0.dimensions.height) / 2 / 10,
+         position));
+      }();
+   });
+   var rotationOf = function (orientation) {
+      return A2($Utilities.angle,
+      orientation,
+      A2($Math$Vector2.vec2,1,0));
+   };
+   var renderResource = F2(function (resource,
+   viewport) {
+      return $Graphics$Collage.move(A2(transform,
+      resource.position,
+      viewport))($Graphics$Collage.filled($Color.yellow)($Graphics$Collage.square(20)));
+   });
+   var renderRover = F2(function (rover,
+   viewport) {
+      return $Graphics$Collage.move(A2(transform,
+      rover.position,
+      viewport))($Graphics$Collage.rotate(rotationOf(rover.direction))($Graphics$Collage.filled($Color.black)(A2($Graphics$Collage.rect,
+      10,
+      20))));
+   });
+   var renderBackground = function (_v2) {
+      return function () {
+         return $Graphics$Collage.filled($Color.orange)(A2($Graphics$Collage.rect,
+         $Basics.toFloat(_v2.width),
+         $Basics.toFloat(_v2.height)));
+      }();
+   };
+   var render = F3(function (screenDimensions,
+   viewport,
+   world) {
+      return A3($Graphics$Element.container,
+      screenDimensions.width,
+      screenDimensions.height,
+      $Graphics$Element.middle)(A3($Graphics$Collage.collage,
+      viewport.dimensions.width,
+      viewport.dimensions.height,
+      _L.fromArray([renderBackground(viewport.dimensions)
+                   ,A2(renderResource,
+                   world.resource,
+                   viewport)
+                   ,A2(renderRover,
+                   world.rover,
+                   viewport)])));
+   });
+   var Viewport = function (a) {
+      return {_: {},dimensions: a};
+   };
+   _elm.ViewModel.values = {_op: _op
+                           ,render: render
+                           ,Viewport: Viewport};
+   return _elm.ViewModel.values;
+};

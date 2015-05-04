@@ -1,0 +1,21 @@
+Elm.Model = Elm.Model || {};
+Elm.Model.Resource = Elm.Model.Resource || {};
+Elm.Model.Resource.make = function (_elm) {
+   "use strict";
+   _elm.Model = _elm.Model || {};
+   _elm.Model.Resource = _elm.Model.Resource || {};
+   if (_elm.Model.Resource.values)
+   return _elm.Model.Resource.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Model.Resource",
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm);
+   var Resource = function (a) {
+      return {_: {},position: a};
+   };
+   _elm.Model.Resource.values = {_op: _op
+                                ,Resource: Resource};
+   return _elm.Model.Resource.values;
+};

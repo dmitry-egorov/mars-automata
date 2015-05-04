@@ -1,0 +1,85 @@
+Elm.Model = Elm.Model || {};
+Elm.Model.Rover = Elm.Model.Rover || {};
+Elm.Model.Rover.make = function (_elm) {
+   "use strict";
+   _elm.Model = _elm.Model || {};
+   _elm.Model.Rover = _elm.Model.Rover || {};
+   if (_elm.Model.Rover.values)
+   return _elm.Model.Rover.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Model.Rover",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Model$Resource = Elm.Model.Resource.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Utilities$List = Elm.Utilities.List.make(_elm);
+   var findClosest = F2(function (rover,
+   resources) {
+      return function () {
+         var distance = function (resource) {
+            return A2($Math$Vector2.distanceSquared,
+            resource.position,
+            rover.position);
+         };
+         return A2($Utilities$List.minimumBy,
+         resources,
+         distance);
+      }();
+   });
+   var applyVelocity = F2(function (rover,
+   dt) {
+      return function () {
+         var newPosition = A2($Math$Vector2.scale,
+         rover.speed * $Time.inSeconds(dt),
+         rover.direction);
+         return _U.replace([["position"
+                            ,A2($Math$Vector2.add,
+                            rover.position,
+                            newPosition)]],
+         rover);
+      }();
+   });
+   var roverSpeed = 2;
+   var findTarget = F2(function (rover,
+   resources) {
+      return function () {
+         var closestResource = A2(findClosest,
+         rover,
+         resources);
+         return function () {
+            switch (closestResource.ctor)
+            {case "Just":
+               return _U.replace([["direction"
+                                  ,A2($Math$Vector2.direction,
+                                  closestResource._0.position,
+                                  rover.position)]
+                                 ,["speed",roverSpeed]],
+                 rover);}
+            return rover;
+         }();
+      }();
+   });
+   var updateRover = F3(function (rover,
+   resources,
+   dt) {
+      return A2(applyVelocity,
+      A2(findTarget,rover,resources),
+      dt);
+   });
+   var Rover = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,direction: b
+             ,position: a
+             ,speed: c};
+   });
+   _elm.Model.Rover.values = {_op: _op
+                             ,updateRover: updateRover
+                             ,Rover: Rover};
+   return _elm.Model.Rover.values;
+};
