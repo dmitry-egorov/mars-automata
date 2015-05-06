@@ -1,6 +1,6 @@
 module Main where
 
-
+import Graphics.Element exposing (..)
 import Math.Vector2 exposing (..)
 import Window
 import Signal exposing (..)
@@ -11,9 +11,11 @@ import Utilities exposing (..)
 import Model.World exposing (..)
 import Model.Resource exposing (..)
 import Model.Rover exposing (..)
-import ViewModel.ViewModel exposing (..)
+import ViewModel.WorldViewModel exposing (..)
+import ViewModel.GUIViewModel exposing (..)
+import Debug
 
-viewWorld = Viewport { width = 1024, height = 768 }
+viewport = Viewport { width = 1024, height = 768 }
 
 initialSeed = Random.initialSeed 31415
 
@@ -23,17 +25,27 @@ initialWorld =
     rover =
     {
       position  = vec2 0 0,
-      direction = normalize <| vec2 -0.5 0.5,
+      direction = vec2 0 1,
       speed  = 0
     },
     resources = generateResources 10 initialSeed 
   }
 
-worldSignal = foldp updateWorld initialWorld (fps 30)
+framerate = 30
+dt = 1000 / framerate
+
+worldSignal = foldp (\_ w -> updateWorld w dt) initialWorld (fps framerate)
+
+render : Dimensions2 -> World -> Element
+render screenDimensions world = 
+  layers
+  [
+    renderGui world,
+    renderWorld screenDimensions viewport world
+  ]
 
 main = render
   <~ (toDimensions2 <~ Window.dimensions)
-  ~ constant viewWorld
   ~ worldSignal
 
 

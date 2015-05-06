@@ -1,0 +1,40 @@
+Elm.ViewModel = Elm.ViewModel || {};
+Elm.ViewModel.GUIViewModel = Elm.ViewModel.GUIViewModel || {};
+Elm.ViewModel.GUIViewModel.make = function (_elm) {
+   "use strict";
+   _elm.ViewModel = _elm.ViewModel || {};
+   _elm.ViewModel.GUIViewModel = _elm.ViewModel.GUIViewModel || {};
+   if (_elm.ViewModel.GUIViewModel.values)
+   return _elm.ViewModel.GUIViewModel.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "ViewModel.GUIViewModel",
+   $Basics = Elm.Basics.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Model$World = Elm.Model.World.make(_elm),
+   $Utilities$Float = Elm.Utilities.Float.make(_elm),
+   $Utilities$Vec2 = Elm.Utilities.Vec2.make(_elm);
+   var renderGui = function (w) {
+      return function () {
+         var s = $Utilities$Float.format(w.rover.speed);
+         var rd = $Utilities$Vec2.format(w.rover.direction);
+         var rp = $Utilities$Vec2.format(w.rover.position);
+         return A2($Graphics$Element.flow,
+         $Graphics$Element.down,
+         _L.fromArray([$Graphics$Element.show(A2($Basics._op["++"],
+                      "Pos: ",
+                      rp))
+                      ,$Graphics$Element.show(A2($Basics._op["++"],
+                      "Dir: ",
+                      rd))
+                      ,$Graphics$Element.show(A2($Basics._op["++"],
+                      "S: ",
+                      s))]));
+      }();
+   };
+   _elm.ViewModel.GUIViewModel.values = {_op: _op
+                                        ,renderGui: renderGui};
+   return _elm.ViewModel.GUIViewModel.values;
+};

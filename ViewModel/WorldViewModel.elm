@@ -1,4 +1,4 @@
-module ViewModel.ViewModel (Viewport, render) where
+module ViewModel.WorldViewModel (Viewport, renderWorld) where
 
 import List exposing (..)
 import Color exposing (..)
@@ -18,8 +18,8 @@ type alias Viewport =
     dimensions: Dimensions2
   }
 
-render : Dimensions2 -> Viewport -> World -> Element
-render screenDimensions viewport world =
+renderWorld : Dimensions2 -> Viewport -> World -> Element
+renderWorld screenDimensions viewport world =
   container screenDimensions.width screenDimensions.height middle <|
   collage viewport.dimensions.width viewport.dimensions.height <| 
   concat

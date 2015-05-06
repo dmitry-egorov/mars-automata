@@ -10,6 +10,7 @@ Elm.Main.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
    $Math$Vector2 = Elm.Math.Vector2.make(_elm),
    $Model$Resource = Elm.Model.Resource.make(_elm),
    $Model$World = Elm.Model.World.make(_elm),
@@ -17,7 +18,8 @@ Elm.Main.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Time = Elm.Time.make(_elm),
    $Utilities = Elm.Utilities.make(_elm),
-   $ViewModel$ViewModel = Elm.ViewModel.ViewModel.make(_elm),
+   $ViewModel$GUIViewModel = Elm.ViewModel.GUIViewModel.make(_elm),
+   $ViewModel$WorldViewModel = Elm.ViewModel.WorldViewModel.make(_elm),
    $Window = Elm.Window.make(_elm);
    var generateResources = F2(function (count,
    seed) {
@@ -51,40 +53,57 @@ Elm.Main.make = function (_elm) {
          seed));
       }();
    });
+   var framerate = 30;
+   var dt = 1000 / framerate;
    var initialSeed = $Random.initialSeed(31415);
    var initialWorld = {_: {}
                       ,resources: A2(generateResources,
                       10,
                       initialSeed)
                       ,rover: {_: {}
-                              ,direction: $Math$Vector2.normalize(A2($Math$Vector2.vec2,
-                              -0.5,
-                              0.5))
+                              ,direction: A2($Math$Vector2.vec2,
+                              0,
+                              1)
                               ,position: A2($Math$Vector2.vec2,
                               0,
                               0)
                               ,speed: 0}};
    var worldSignal = A3($Signal.foldp,
-   $Model$World.updateWorld,
+   F2(function (_v0,w) {
+      return function () {
+         return A2($Model$World.updateWorld,
+         w,
+         dt);
+      }();
+   }),
    initialWorld,
-   $Time.fps(30));
-   var viewWorld = $ViewModel$ViewModel.Viewport({_: {}
-                                                 ,height: 768
-                                                 ,width: 1024});
+   $Time.fps(framerate));
+   var viewport = $ViewModel$WorldViewModel.Viewport({_: {}
+                                                     ,height: 768
+                                                     ,width: 1024});
+   var render = F2(function (screenDimensions,
+   world) {
+      return $Graphics$Element.layers(_L.fromArray([$ViewModel$GUIViewModel.renderGui(world)
+                                                   ,A3($ViewModel$WorldViewModel.renderWorld,
+                                                   screenDimensions,
+                                                   viewport,
+                                                   world)]));
+   });
    var main = A2($Signal._op["~"],
-   A2($Signal._op["~"],
    A2($Signal._op["<~"],
-   $ViewModel$ViewModel.render,
+   render,
    A2($Signal._op["<~"],
    $Utilities.toDimensions2,
    $Window.dimensions)),
-   $Signal.constant(viewWorld)),
    worldSignal);
    _elm.Main.values = {_op: _op
-                      ,viewWorld: viewWorld
+                      ,viewport: viewport
                       ,initialSeed: initialSeed
                       ,initialWorld: initialWorld
+                      ,framerate: framerate
+                      ,dt: dt
                       ,worldSignal: worldSignal
+                      ,render: render
                       ,main: main
                       ,generateResources: generateResources};
    return _elm.Main.values;

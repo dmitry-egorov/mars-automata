@@ -1909,6 +1909,7 @@ Elm.Main.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
    $Math$Vector2 = Elm.Math.Vector2.make(_elm),
    $Model$Resource = Elm.Model.Resource.make(_elm),
    $Model$World = Elm.Model.World.make(_elm),
@@ -1916,7 +1917,8 @@ Elm.Main.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Time = Elm.Time.make(_elm),
    $Utilities = Elm.Utilities.make(_elm),
-   $ViewModel$ViewModel = Elm.ViewModel.ViewModel.make(_elm),
+   $ViewModel$GUIViewModel = Elm.ViewModel.GUIViewModel.make(_elm),
+   $ViewModel$WorldViewModel = Elm.ViewModel.WorldViewModel.make(_elm),
    $Window = Elm.Window.make(_elm);
    var generateResources = F2(function (count,
    seed) {
@@ -1950,40 +1952,57 @@ Elm.Main.make = function (_elm) {
          seed));
       }();
    });
+   var framerate = 30;
+   var dt = 1000 / framerate;
    var initialSeed = $Random.initialSeed(31415);
    var initialWorld = {_: {}
                       ,resources: A2(generateResources,
                       10,
                       initialSeed)
                       ,rover: {_: {}
-                              ,direction: $Math$Vector2.normalize(A2($Math$Vector2.vec2,
-                              -0.5,
-                              0.5))
+                              ,direction: A2($Math$Vector2.vec2,
+                              0,
+                              1)
                               ,position: A2($Math$Vector2.vec2,
                               0,
                               0)
                               ,speed: 0}};
    var worldSignal = A3($Signal.foldp,
-   $Model$World.updateWorld,
+   F2(function (_v0,w) {
+      return function () {
+         return A2($Model$World.updateWorld,
+         w,
+         dt);
+      }();
+   }),
    initialWorld,
-   $Time.fps(30));
-   var viewWorld = $ViewModel$ViewModel.Viewport({_: {}
-                                                 ,height: 768
-                                                 ,width: 1024});
+   $Time.fps(framerate));
+   var viewport = $ViewModel$WorldViewModel.Viewport({_: {}
+                                                     ,height: 768
+                                                     ,width: 1024});
+   var render = F2(function (screenDimensions,
+   world) {
+      return $Graphics$Element.layers(_L.fromArray([$ViewModel$GUIViewModel.renderGui(world)
+                                                   ,A3($ViewModel$WorldViewModel.renderWorld,
+                                                   screenDimensions,
+                                                   viewport,
+                                                   world)]));
+   });
    var main = A2($Signal._op["~"],
-   A2($Signal._op["~"],
    A2($Signal._op["<~"],
-   $ViewModel$ViewModel.render,
+   render,
    A2($Signal._op["<~"],
    $Utilities.toDimensions2,
    $Window.dimensions)),
-   $Signal.constant(viewWorld)),
    worldSignal);
    _elm.Main.values = {_op: _op
-                      ,viewWorld: viewWorld
+                      ,viewport: viewport
                       ,initialSeed: initialSeed
                       ,initialWorld: initialWorld
+                      ,framerate: framerate
+                      ,dt: dt
                       ,worldSignal: worldSignal
+                      ,render: render
                       ,main: main
                       ,generateResources: generateResources};
    return _elm.Main.values;
@@ -2242,8 +2261,8 @@ Elm.Model.World.make = function (_elm) {
    $Model$Resource = Elm.Model.Resource.make(_elm),
    $Model$Rover = Elm.Model.Rover.make(_elm),
    $Time = Elm.Time.make(_elm);
-   var updateWorld = F2(function (dt,
-   world) {
+   var updateWorld = F2(function (world,
+   dt) {
       return _U.replace([["rover"
                          ,A3($Model$Rover.updateRover,
                          world.rover,
@@ -8072,6 +8091,27 @@ Elm.Utilities.make = function (_elm) {
    return _elm.Utilities.values;
 };
 Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.Float = Elm.Utilities.Float || {};
+Elm.Utilities.Float.make = function (_elm) {
+   "use strict";
+   _elm.Utilities = _elm.Utilities || {};
+   _elm.Utilities.Float = _elm.Utilities.Float || {};
+   if (_elm.Utilities.Float.values)
+   return _elm.Utilities.Float.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Utilities.Float",
+   $Basics = Elm.Basics.make(_elm);
+   var format = function (f) {
+      return $Basics.toString($Basics.toFloat($Basics.truncate(f * 100)) / 100);
+   };
+   _elm.Utilities.Float.values = {_op: _op
+                                 ,format: format};
+   return _elm.Utilities.Float.values;
+};
+Elm.Utilities = Elm.Utilities || {};
 Elm.Utilities.List = Elm.Utilities.List || {};
 Elm.Utilities.List.make = function (_elm) {
    "use strict";
@@ -8117,19 +8157,90 @@ Elm.Utilities.List.make = function (_elm) {
                                 ,minimumBy: minimumBy};
    return _elm.Utilities.List.values;
 };
-Elm.ViewModel = Elm.ViewModel || {};
-Elm.ViewModel.ViewModel = Elm.ViewModel.ViewModel || {};
-Elm.ViewModel.ViewModel.make = function (_elm) {
+Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.Vec2 = Elm.Utilities.Vec2 || {};
+Elm.Utilities.Vec2.make = function (_elm) {
    "use strict";
-   _elm.ViewModel = _elm.ViewModel || {};
-   _elm.ViewModel.ViewModel = _elm.ViewModel.ViewModel || {};
-   if (_elm.ViewModel.ViewModel.values)
-   return _elm.ViewModel.ViewModel.values;
+   _elm.Utilities = _elm.Utilities || {};
+   _elm.Utilities.Vec2 = _elm.Utilities.Vec2 || {};
+   if (_elm.Utilities.Vec2.values)
+   return _elm.Utilities.Vec2.values;
    var _op = {},
    _N = Elm.Native,
    _U = _N.Utils.make(_elm),
    _L = _N.List.make(_elm),
-   $moduleName = "ViewModel.ViewModel",
+   $moduleName = "Utilities.Vec2",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Utilities$Float = Elm.Utilities.Float.make(_elm);
+   var format = function (v) {
+      return A2($Basics._op["++"],
+      "(",
+      A2($Basics._op["++"],
+      $Utilities$Float.format($Math$Vector2.getX(v)),
+      A2($Basics._op["++"],
+      ", ",
+      A2($Basics._op["++"],
+      $Utilities$Float.format($Math$Vector2.getY(v)),
+      ")"))));
+   };
+   _elm.Utilities.Vec2.values = {_op: _op
+                                ,format: format};
+   return _elm.Utilities.Vec2.values;
+};
+Elm.ViewModel = Elm.ViewModel || {};
+Elm.ViewModel.GUIViewModel = Elm.ViewModel.GUIViewModel || {};
+Elm.ViewModel.GUIViewModel.make = function (_elm) {
+   "use strict";
+   _elm.ViewModel = _elm.ViewModel || {};
+   _elm.ViewModel.GUIViewModel = _elm.ViewModel.GUIViewModel || {};
+   if (_elm.ViewModel.GUIViewModel.values)
+   return _elm.ViewModel.GUIViewModel.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "ViewModel.GUIViewModel",
+   $Basics = Elm.Basics.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Model$World = Elm.Model.World.make(_elm),
+   $Utilities$Float = Elm.Utilities.Float.make(_elm),
+   $Utilities$Vec2 = Elm.Utilities.Vec2.make(_elm);
+   var renderGui = function (w) {
+      return function () {
+         var s = $Utilities$Float.format(w.rover.speed);
+         var rd = $Utilities$Vec2.format(w.rover.direction);
+         var rp = $Utilities$Vec2.format(w.rover.position);
+         return A2($Graphics$Element.flow,
+         $Graphics$Element.down,
+         _L.fromArray([$Graphics$Element.show(A2($Basics._op["++"],
+                      "Pos: ",
+                      rp))
+                      ,$Graphics$Element.show(A2($Basics._op["++"],
+                      "Dir: ",
+                      rd))
+                      ,$Graphics$Element.show(A2($Basics._op["++"],
+                      "S: ",
+                      s))]));
+      }();
+   };
+   _elm.ViewModel.GUIViewModel.values = {_op: _op
+                                        ,renderGui: renderGui};
+   return _elm.ViewModel.GUIViewModel.values;
+};
+Elm.ViewModel = Elm.ViewModel || {};
+Elm.ViewModel.WorldViewModel = Elm.ViewModel.WorldViewModel || {};
+Elm.ViewModel.WorldViewModel.make = function (_elm) {
+   "use strict";
+   _elm.ViewModel = _elm.ViewModel || {};
+   _elm.ViewModel.WorldViewModel = _elm.ViewModel.WorldViewModel || {};
+   if (_elm.ViewModel.WorldViewModel.values)
+   return _elm.ViewModel.WorldViewModel.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "ViewModel.WorldViewModel",
    $Basics = Elm.Basics.make(_elm),
    $Color = Elm.Color.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
@@ -8203,7 +8314,7 @@ Elm.ViewModel.ViewModel.make = function (_elm) {
          }();
       }();
    };
-   var render = F3(function (screenDimensions,
+   var renderWorld = F3(function (screenDimensions,
    viewport,
    world) {
       return A3($Graphics$Element.container,
@@ -8222,10 +8333,10 @@ Elm.ViewModel.ViewModel.make = function (_elm) {
    var Viewport = function (a) {
       return {_: {},dimensions: a};
    };
-   _elm.ViewModel.ViewModel.values = {_op: _op
-                                     ,render: render
-                                     ,Viewport: Viewport};
-   return _elm.ViewModel.ViewModel.values;
+   _elm.ViewModel.WorldViewModel.values = {_op: _op
+                                          ,renderWorld: renderWorld
+                                          ,Viewport: Viewport};
+   return _elm.ViewModel.WorldViewModel.values;
 };
 Elm.Window = Elm.Window || {};
 Elm.Window.make = function (_elm) {

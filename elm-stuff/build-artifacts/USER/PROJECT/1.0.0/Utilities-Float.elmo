@@ -1,0 +1,21 @@
+Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.Float = Elm.Utilities.Float || {};
+Elm.Utilities.Float.make = function (_elm) {
+   "use strict";
+   _elm.Utilities = _elm.Utilities || {};
+   _elm.Utilities.Float = _elm.Utilities.Float || {};
+   if (_elm.Utilities.Float.values)
+   return _elm.Utilities.Float.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Utilities.Float",
+   $Basics = Elm.Basics.make(_elm);
+   var format = function (f) {
+      return $Basics.toString($Basics.toFloat($Basics.truncate(f * 100)) / 100);
+   };
+   _elm.Utilities.Float.values = {_op: _op
+                                 ,format: format};
+   return _elm.Utilities.Float.values;
+};

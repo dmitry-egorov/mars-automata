@@ -14,8 +14,8 @@ Elm.Model.World.make = function (_elm) {
    $Model$Resource = Elm.Model.Resource.make(_elm),
    $Model$Rover = Elm.Model.Rover.make(_elm),
    $Time = Elm.Time.make(_elm);
-   var updateWorld = F2(function (dt,
-   world) {
+   var updateWorld = F2(function (world,
+   dt) {
       return _U.replace([["rover"
                          ,A3($Model$Rover.updateRover,
                          world.rover,

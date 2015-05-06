@@ -12,5 +12,5 @@ type alias World =
     resources: List Resource
   }
 
-updateWorld : Time -> World -> World
-updateWorld dt world = {world | rover <- updateRover world.rover world.resources dt}
+updateWorld : World -> Time -> World
+updateWorld world dt = {world | rover <- updateRover world.rover world.resources dt}

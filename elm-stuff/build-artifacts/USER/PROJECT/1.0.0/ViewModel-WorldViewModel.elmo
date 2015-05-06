@@ -1,0 +1,110 @@
+Elm.ViewModel = Elm.ViewModel || {};
+Elm.ViewModel.WorldViewModel = Elm.ViewModel.WorldViewModel || {};
+Elm.ViewModel.WorldViewModel.make = function (_elm) {
+   "use strict";
+   _elm.ViewModel = _elm.ViewModel || {};
+   _elm.ViewModel.WorldViewModel = _elm.ViewModel.WorldViewModel || {};
+   if (_elm.ViewModel.WorldViewModel.values)
+   return _elm.ViewModel.WorldViewModel.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "ViewModel.WorldViewModel",
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Model$Resource = Elm.Model.Resource.make(_elm),
+   $Model$Rover = Elm.Model.Rover.make(_elm),
+   $Model$World = Elm.Model.World.make(_elm),
+   $Utilities = Elm.Utilities.make(_elm);
+   var transpose = F2(function (position,
+   _v0) {
+      return function () {
+         return $Math$Vector2.toTuple(A2($Math$Vector2.scale,
+         $Basics.toFloat(_v0.dimensions.height) / 2 / 10,
+         position));
+      }();
+   });
+   var rotationOf = function (orientation) {
+      return A2($Utilities.angle,
+      A2($Math$Vector2.vec2,0,1),
+      orientation);
+   };
+   var renderResources = F2(function (resources,
+   viewport) {
+      return function () {
+         var renderResource = function (resource) {
+            return $Graphics$Collage.move(A2(transpose,
+            resource.position,
+            viewport))($Graphics$Collage.filled($Color.yellow)($Graphics$Collage.square(20)));
+         };
+         return A2($List.map,
+         renderResource,
+         resources);
+      }();
+   });
+   var renderRover = F2(function (rover,
+   viewport) {
+      return function () {
+         var transform2 = function (form) {
+            return $Graphics$Collage.move(A2(transpose,
+            rover.position,
+            viewport))($Graphics$Collage.rotate(rotationOf(rover.direction))(form));
+         };
+         return A2($List.map,
+         transform2,
+         _L.fromArray([$Graphics$Collage.filled($Color.black)(A2($Graphics$Collage.rect,
+                      10,
+                      20))
+                      ,$Graphics$Collage.traced($Graphics$Collage.solid($Color.black))(A2($Graphics$Collage.segment,
+                      {ctor: "_Tuple2",_0: 0,_1: 0},
+                      {ctor: "_Tuple2"
+                      ,_0: 0
+                      ,_1: 15}))]));
+      }();
+   });
+   var renderBackground = function (_v2) {
+      return function () {
+         return function () {
+            var $ = {ctor: "_Tuple2"
+                    ,_0: $Basics.toFloat(_v2.width)
+                    ,_1: $Basics.toFloat(_v2.height)},
+            w = $._0,
+            h = $._1;
+            return _L.fromArray([$Graphics$Collage.filled($Color.orange)(A2($Graphics$Collage.rect,
+                                w,
+                                h))
+                                ,$Graphics$Collage.move({ctor: "_Tuple2"
+                                                        ,_0: w / 4
+                                                        ,_1: (0 - h) / 2})($Graphics$Collage.filled($Color.darkOrange)($Graphics$Collage.circle(h / 2)))]);
+         }();
+      }();
+   };
+   var renderWorld = F3(function (screenDimensions,
+   viewport,
+   world) {
+      return A3($Graphics$Element.container,
+      screenDimensions.width,
+      screenDimensions.height,
+      $Graphics$Element.middle)(A2($Graphics$Collage.collage,
+      viewport.dimensions.width,
+      viewport.dimensions.height)($List.concat(_L.fromArray([renderBackground(viewport.dimensions)
+                                                            ,A2(renderResources,
+                                                            world.resources,
+                                                            viewport)
+                                                            ,A2(renderRover,
+                                                            world.rover,
+                                                            viewport)]))));
+   });
+   var Viewport = function (a) {
+      return {_: {},dimensions: a};
+   };
+   _elm.ViewModel.WorldViewModel.values = {_op: _op
+                                          ,renderWorld: renderWorld
+                                          ,Viewport: Viewport};
+   return _elm.ViewModel.WorldViewModel.values;
+};

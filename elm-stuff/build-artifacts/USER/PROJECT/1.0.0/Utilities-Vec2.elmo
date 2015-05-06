@@ -1,0 +1,31 @@
+Elm.Utilities = Elm.Utilities || {};
+Elm.Utilities.Vec2 = Elm.Utilities.Vec2 || {};
+Elm.Utilities.Vec2.make = function (_elm) {
+   "use strict";
+   _elm.Utilities = _elm.Utilities || {};
+   _elm.Utilities.Vec2 = _elm.Utilities.Vec2 || {};
+   if (_elm.Utilities.Vec2.values)
+   return _elm.Utilities.Vec2.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Utilities.Vec2",
+   $Basics = Elm.Basics.make(_elm),
+   $Math$Vector2 = Elm.Math.Vector2.make(_elm),
+   $Utilities$Float = Elm.Utilities.Float.make(_elm);
+   var format = function (v) {
+      return A2($Basics._op["++"],
+      "(",
+      A2($Basics._op["++"],
+      $Utilities$Float.format($Math$Vector2.getX(v)),
+      A2($Basics._op["++"],
+      ", ",
+      A2($Basics._op["++"],
+      $Utilities$Float.format($Math$Vector2.getY(v)),
+      ")"))));
+   };
+   _elm.Utilities.Vec2.values = {_op: _op
+                                ,format: format};
+   return _elm.Utilities.Vec2.values;
+};
